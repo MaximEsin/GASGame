@@ -2,6 +2,7 @@
 
 
 #include "Characters/GAS_BaseCharacter.h"
+#include "AbilitySystemComponent.h"
 
 // Sets default values
 AGAS_BaseCharacter::AGAS_BaseCharacter()
@@ -16,6 +17,19 @@ AGAS_BaseCharacter::AGAS_BaseCharacter()
 UAbilitySystemComponent* AGAS_BaseCharacter::GetAbilitySystemComponent() const
 {
 	return nullptr;
+}
+
+void AGAS_BaseCharacter::GiveStartupAbilities()
+{
+	if (!IsValid(GetAbilitySystemComponent())) return;
+
+	for (const auto& Ability : StartupAbilities)
+	{
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability);
+		GetAbilitySystemComponent()->GiveAbility(AbilitySpec);
+
+
+	}
 }
 
 

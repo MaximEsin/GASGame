@@ -4,7 +4,10 @@
 #include "Player/GAS_PlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
 #include "GameFramework/Character.h"
+#include "AbilitySystemComponent.h"
+#include "GameplayTags/GASTags.h"
 
 void AGAS_PlayerController::SetupInputComponent()
 {
@@ -68,5 +71,13 @@ void AGAS_PlayerController::Look(const FInputActionValue& Value)
 
 void AGAS_PlayerController::Primary()
 {
-	UE_LOG(LogTemp, Warning, TEXT("QQ"))
+	ActivateAbility(GASTags::GASAbilities::Primary);
+}
+
+void AGAS_PlayerController::ActivateAbility(const FGameplayTag& AbilityTag) const
+{
+	UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn());
+	if (!IsValid(ASC)) return;
+
+	ASC->TryActivateAbilitiesByTag(AbilityTag.GetSingleTagContainer());
 }
