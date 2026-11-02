@@ -6,6 +6,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Player/GAS_PlayerState.h"
+#include "AbilitySystemComponent.h"
 
 AGAS_PlayerCharacter::AGAS_PlayerCharacter()
 {
@@ -34,4 +36,30 @@ AGAS_PlayerCharacter::AGAS_PlayerCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>("FollowCamera");
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
+}
+
+UAbilitySystemComponent* AGAS_PlayerCharacter::GetAbilitySystemComponent() const
+{
+	AGAS_PlayerState* GASPlayerState = Cast<AGAS_PlayerState>(GetPlayerState());
+	if (!IsValid(GASPlayerState)) return nullptr;
+
+	return GASPlayerState->GetAbilitySystemComponent();
+}
+
+void AGAS_PlayerCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	if (!IsValid(GetAbilitySystemComponent())) return;
+
+	GetAbilitySystemComponent()->InitAbilityActorInfo(GetPlayerState(), this);
+}
+
+void AGAS_PlayerCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+
+	if (!IsValid(GetAbilitySystemComponent())) return;
+
+	GetAbilitySystemComponent()->InitAbilityActorInfo(GetPlayerState(), this);
 }

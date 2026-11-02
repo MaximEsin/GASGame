@@ -13,4 +13,9 @@ AGAS_BaseCharacter::AGAS_BaseCharacter()
 
 }
 
+UAbilitySystemComponent* AGAS_BaseCharacter::GetAbilitySystemComponent() const
+{
+	return nullptr;
+}
+
 

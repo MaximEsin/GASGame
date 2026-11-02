@@ -16,6 +16,10 @@ class GASGAME_API AGAS_PlayerCharacter : public AGAS_BaseCharacter
 
 public:
 	AGAS_PlayerCharacter();
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_PlayerState() override;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
