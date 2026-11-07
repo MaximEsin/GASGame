@@ -9,16 +9,16 @@
 /**
  *
  */
-UCLASS()
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class GASGAME_API UGAS_AbilitySystemComponent : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
 
 public:
-	UGAS_AbilitySystemComponent();
-	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void OnGiveAbility(FGameplayAbilitySpec& AbilitySpec) override;
+	virtual void OnRep_ActivateAbilities() override;
 
-protected:
-	virtual void BeginPlay() override;
+private:
+	void HandleAutoActivatedAbility(const FGameplayAbilitySpec& AbilitySpec);
 
 };
