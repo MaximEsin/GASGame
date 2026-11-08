@@ -4,8 +4,10 @@
 #include "AbilitySystem/Abilities/Player/GAS_Primary.h"
 #include "Engine/OverlapResult.h"
 #include "DrawDebugHelpers.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "GameplayTags/GASTags.h"
 
-void UGAS_Primary::HitBoxOverlapTest()
+TArray<AActor*> UGAS_Primary::HitBoxOverlapTest()
 {
 	TArray<AActor*> ActorsToIgnoere;
 	ActorsToIgnoere.Add(GetAvatarActorFromActorInfo());
@@ -34,19 +36,46 @@ void UGAS_Primary::HitBoxOverlapTest()
 		ResponseParams
 	);
 
+	TArray<AActor*> ActorsHit;
+
+	for (const FOverlapResult& Result : OverlapResults)
+	{
+		if (!IsValid(Result.GetActor())) continue;
+
+		ActorsHit.Add(Result.GetActor());
+	}
+
 	if (bDrawDebugs)
 	{
-		DrawDebugSphere(GetWorld(), HitBoxLocation, HitBoxRadius, 16, FColor::Red, false, 3.0f);
+		DrawHitBoxDebug(HitBoxLocation, OverlapResults);
+	}
 
-		for (const FOverlapResult& Result : OverlapResults)
+	return ActorsHit;
+}
+
+void UGAS_Primary::SendHitReactEventToActors(const TArray<AActor*>& ActorsHit)
+{
+	for (AActor* HitActor : ActorsHit)
+	{
+		FGameplayEventData Payload;
+		Payload.Instigator = GetAvatarActorFromActorInfo();
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(HitActor, GASTags::Events::Enemy::HitReact, Payload);
+
+	}
+}
+
+void UGAS_Primary::DrawHitBoxDebug(const FVector& HitBoxLocation, const TArray<FOverlapResult>& OverlapResults) const
+{
+	DrawDebugSphere(GetWorld(), HitBoxLocation, HitBoxRadius, 16, FColor::Red, false, 3.0f);
+
+	for (const FOverlapResult& Result : OverlapResults)
+	{
+		if (IsValid(Result.GetActor()))
 		{
-			if (IsValid(Result.GetActor()))
-			{
-				FVector DebugLocation = Result.GetActor()->GetActorLocation();
-				DebugLocation.Z += 100.0f;
-				// Foreground depth priority so the sphere isn't hidden inside large meshes
-				DrawDebugSphere(GetWorld(), DebugLocation, 30.0f, 10, FColor::Green, false, 3.0f, SDPG_Foreground);
-			}
+			FVector DebugLocation = Result.GetActor()->GetActorLocation();
+			DebugLocation.Z += 100.0f;
+			// Foreground depth priority so the sphere isn't hidden inside large meshes
+			DrawDebugSphere(GetWorld(), DebugLocation, 30.0f, 10, FColor::Green, false, 3.0f, SDPG_Foreground);
 		}
 	}
 }
