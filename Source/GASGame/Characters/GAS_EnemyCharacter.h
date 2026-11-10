@@ -6,6 +6,7 @@
 #include "Characters/GAS_BaseCharacter.h"
 #include "GAS_EnemyCharacter.generated.h"
 
+class UAttributeSet;
 class UAbilitySystemComponent;
 
 UCLASS()
@@ -23,4 +24,6 @@ protected:
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+
+	TObjectPtr<UAttributeSet> AttributeSet;
 };

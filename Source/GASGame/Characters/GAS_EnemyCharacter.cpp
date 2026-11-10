@@ -3,6 +3,7 @@
 
 #include "Characters/GAS_EnemyCharacter.h"
 #include "AbilitySystem/GAS_AbilitySystemComponent.h"
+#include "AbilitySystem/GAS_AttributeSet.h"
 
 AGAS_EnemyCharacter::AGAS_EnemyCharacter()
 {
@@ -11,6 +12,8 @@ AGAS_EnemyCharacter::AGAS_EnemyCharacter()
 	AbilitySystemComponent = CreateDefaultSubobject<UGAS_AbilitySystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+
+	AttributeSet = CreateDefaultSubobject<UGAS_AttributeSet>("AttributeSet");
 }
 
 UAbilitySystemComponent* AGAS_EnemyCharacter::GetAbilitySystemComponent() const
